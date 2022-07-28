@@ -28,6 +28,10 @@ export default function Add() {
   };
   const selectedDays = useRef<Set<string>>(new Set<string>());
 
+  const handleSubmit = () => {
+    goMain();
+  };
+
   const handleClick: ChangeEventHandler<HTMLInputElement> = (event) => {
     if (selectedDays.current.has(event.target.value)) {
       selectedDays.current.delete(event.target.value);
