@@ -57,7 +57,7 @@ export function splitString12(string12: string) {
   const minute = time.split(':')[1];
   return [hour, minute, timeType];
 }
-export function combineString12(timeType: typeTimeType, hour: string, minute: string) {
+export function combineString12(hour: string, minute: string, timeType: typeTimeType) {
   return `${hour}:${minute} ${timeType}`;
 }
 

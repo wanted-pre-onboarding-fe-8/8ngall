@@ -53,7 +53,7 @@ export default function StartTimeSelector({ handleTimeChange }: IStartTimeSelect
   useEffect(() => {
     const startHour = hours[hourIndex];
     const startMinute = minutes[minuteIndex];
-    const startTimeString = combineString12(timeType, startHour, startMinute);
+    const startTimeString = combineString12(startHour, startMinute, timeType);
     const endTimeString = calcEndTime(startTimeString);
     handleTimeChange(startTimeString, endTimeString);
   }, [timeType, hourIndex, minuteIndex]);
