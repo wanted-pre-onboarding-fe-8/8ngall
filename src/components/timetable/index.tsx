@@ -18,7 +18,7 @@ function Timetable({ schedules }: TimetableProps) {
     <Container>
       {Object.entries(schedules).map(([day, lectures]) => (
         <Day key={day}>
-          <DayTitle>{day}</DayTitle>
+          <Title>{day}</Title>
           <Divider />
           <Schedule>
             {lectures.map((lecture: ServerSideSchedule) => (
@@ -42,7 +42,7 @@ const Container = styled.div`
   display: flex;
 `;
 
-const DayTitle = styled.div`
+const Title = styled.div`
   display: flex;
   justify-content: center;
 `;

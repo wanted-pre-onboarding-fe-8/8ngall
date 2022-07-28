@@ -3,12 +3,12 @@ import { ServerSideSchedule } from '../types';
 import ClearIcon from '@mui/icons-material/Clear';
 import styled from 'styled-components';
 
-interface cCard2Props {
+interface cCardProps {
   lecture: ServerSideSchedule;
   onClick: () => void;
 }
 
-function cCard2({ lecture, onClick }: cCard2Props) {
+function cCard({ lecture, onClick }: cCardProps) {
   const { start, end } = lecture;
   return (
     <Card>
@@ -22,7 +22,7 @@ function cCard2({ lecture, onClick }: cCard2Props) {
   );
 }
 
-export default cCard2;
+export default cCard;
 
 const Card = styled.div`
   margin-top: 10px;
