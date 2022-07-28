@@ -39,7 +39,7 @@
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "eslint --fix 'src/**/*.{js,jsx,ts,tsx}'",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md}' --config ./.prettierrc",
-    "server":"json-server --watch ./public/database/schedules.json --port 8000"
+    "server": "node ./public/database/server.js"
   },
   "eslintConfig": {
     "extends": [
