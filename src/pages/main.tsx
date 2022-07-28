@@ -6,13 +6,13 @@ import CCard from '../components/cCard';
 
 export default function Main() {
   const navigate = useNavigate();
-  const [openModal, setOpenModal] = React.useState(false);
+  const [, setOpenModal] = React.useState(false);
 
   const goAddClass = () => {
     navigate('/add');
   };
 
-  const handlelOpenModal = () => {
+  const handleOpenModal = () => {
     setOpenModal(true);
   };
 
@@ -31,7 +31,7 @@ export default function Main() {
               <Schedule>
                 {value &&
                   value.map((data, index) => (
-                    <CCard key={index} data={data} onClick={handlelOpenModal} />
+                    <CCard key={index} data={data} onClick={handleOpenModal} />
                   ))}
               </Schedule>
             </Day>
@@ -44,7 +44,7 @@ export default function Main() {
 const WEEK = [
   { title: 'Monday', value: ['10:00 AM - 10:40 AM', '10:00 AM - 10:40 AM'] },
   { title: 'Tuesday', value: [] },
-  { title: 'Wedneday', value: ['10:00 AM - 10:40 AM'] },
+  { title: 'Wednesday', value: ['10:00 AM - 10:40 AM'] },
   { title: 'Thursday', value: ['11:00 AM - 11:40 AM'] },
   { title: 'Friday', value: ['10:00 AM - 10:40 AM'] },
   { title: 'Saturday', value: ['12:20 PM - 1:40 PM'] },
