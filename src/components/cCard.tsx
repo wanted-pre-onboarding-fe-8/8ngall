@@ -1,11 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
+import { ServerSideSchedule } from '../types';
 import ClearIcon from '@mui/icons-material/Clear';
+import styled from 'styled-components';
 
-export default function CCard({ data, onClick }: any) {
+interface cCard2Props {
+  lecture: ServerSideSchedule;
+  onClick: () => void;
+}
+
+function cCard2({ lecture, onClick }: cCard2Props) {
+  const { start, end } = lecture;
   return (
     <Card>
-      <Left>{data}</Left>
+      <Left>{`${start} ~ ${end}`}</Left>
       <Right>
         <RemoveButton onClick={onClick}>
           <ClearIcon sx={{ fontSize: 10 }} />
@@ -14,13 +21,8 @@ export default function CCard({ data, onClick }: any) {
     </Card>
   );
 }
-const Left = styled.div`
-  font-size: 12px;
-  padding: 2px 5px;
-  color: #7c7c7c;
-  /* font-weight: 500; */
-`;
-const Right = styled.div``;
+
+export default cCard2;
 
 const Card = styled.div`
   margin-top: 10px;
@@ -34,6 +36,15 @@ const Card = styled.div`
     box-shadow: 1px 1px 1px 1px #b1b1b1;
   }
 `;
+
+const Left = styled.div`
+  font-size: 12px;
+  padding: 2px 5px;
+  color: #7c7c7c;
+`;
+
+const Right = styled.div``;
+
 const RemoveButton = styled.span`
   display: flex;
   align-items: center;

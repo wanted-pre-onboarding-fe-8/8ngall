@@ -25,3 +25,14 @@ export interface ServerSideSchedule {
   end: string;
 }
 export type ServerSideSchedules = ServerSideSchedule[];
+
+export interface ServerSideScheduleWrapper {
+  [key: string]: ServerSideSchedules;
+  monday: ServerSideSchedules;
+  tuesday: ServerSideSchedules;
+  wednesday: ServerSideSchedules;
+  thursday: ServerSideSchedules;
+  friday: ServerSideSchedules;
+  saturday: ServerSideSchedules;
+  sunday: ServerSideSchedules;
+}
