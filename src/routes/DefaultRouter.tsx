@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router';
 import DefaultLayout from '../layouts/DefaultLayout';
 import Main from '../pages/main';
-import AddClass from '../pages/addClass';
+import Add from '../pages/add';
 
 export default function DefaultRouter() {
   return (
@@ -10,7 +10,7 @@ export default function DefaultRouter() {
       <Routes>
         <Route element={<DefaultLayout />}>
           <Route path='/' element={<Main />} />
-          <Route path='/add' element={<AddClass />} />
+          <Route path='/add' element={<Add />} />
         </Route>
       </Routes>
     </div>
