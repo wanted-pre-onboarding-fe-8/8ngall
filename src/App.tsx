@@ -1,7 +1,8 @@
 import React from 'react';
+import DefaultRouter from './routes/DefaultRouter';
 
 function App() {
-  return <div>boilerplate</div>;
+  return <DefaultRouter />;
 }
 
 export default App;
