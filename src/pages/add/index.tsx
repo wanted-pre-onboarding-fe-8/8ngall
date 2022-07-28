@@ -28,7 +28,15 @@ export default function Add() {
   };
   const selectedDays = useRef<Set<string>>(new Set<string>());
 
+  const makeRequestData = (selectedWeekday: Set<string>) => {
+    const mockTime = { start: '20:05:00', end: '20:45:00' };
+    selectedWeekday.forEach((element) => {
+      console.log({ ...mockTime, weekday: element.toLowerCase() });
+    });
+  };
+
   const handleSubmit = () => {
+    makeRequestData(selectedDays.current);
     goMain();
   };
 
