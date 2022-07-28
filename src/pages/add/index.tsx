@@ -26,8 +26,14 @@ export default function Add() {
     const endDate = string12ToObject(endTimeString12);
     setSchedule({ start: startDate, end: endDate });
   };
+  const selectedDays = useRef<Set<string>>(new Set<string>());
+
   const handleClick: ChangeEventHandler<HTMLInputElement> = (event) => {
-    console.log(event);
+    if (selectedDays.current.has(event.target.value)) {
+      selectedDays.current.delete(event.target.value);
+    } else {
+      selectedDays.current.add(event.target.value);
+    }
   };
 
   const handleSaveSchedules = (time: scheduleTime, weekdays: string[]) => {
