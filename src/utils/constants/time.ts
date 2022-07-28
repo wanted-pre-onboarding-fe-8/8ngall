@@ -1,0 +1,3 @@
+const BASE_DATE_TO_PARSE_TIME = '1970-01-01T';
+
+export { BASE_DATE_TO_PARSE_TIME };
