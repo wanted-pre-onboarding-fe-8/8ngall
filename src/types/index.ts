@@ -17,3 +17,11 @@ export interface ISchedule {
   end: Date;
 }
 export type ISchedules = ISchedule[];
+
+export interface ServerSideSchedule {
+  id: number;
+  weekday: Weekdays;
+  start: string;
+  end: string;
+}
+export type ServerSideSchedules = ServerSideSchedule[];
