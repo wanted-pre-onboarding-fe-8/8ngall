@@ -8,9 +8,7 @@ server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
 router.render = (req, res) => {
-  console.log(Array.isArray(res.locals.data), res.locals.data);
   if (req.method === 'GET' && Array.isArray(res.locals.data)) {
-    console.log(req.originalUrl);
     const data = res.locals.data;
     const integratedByWeekday = data.reduce(
       (accum, cur) => {
