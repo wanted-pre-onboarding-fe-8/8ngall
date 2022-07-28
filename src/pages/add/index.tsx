@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { ChangeEventHandler, useState, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import CButton from '../../components/cButton';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router';
 import StartTimeSelector from './StartTimeSelector';
 import { objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
 
@@ -25,6 +25,9 @@ export default function Add() {
     const startDate = string12ToObject(startTimeString12);
     const endDate = string12ToObject(endTimeString12);
     setSchedule({ start: startDate, end: endDate });
+  };
+  const handleClick: ChangeEventHandler<HTMLInputElement> = (event) => {
+    console.log(event);
   };
 
   const handleSaveSchedules = (time: scheduleTime, weekdays: string[]) => {
@@ -53,8 +56,11 @@ export default function Add() {
         <Div>
           <ListTitle>Repeat on</ListTitle>
           <Div>
-            {WEEKS.map((week, index) => (
-              <Button key={index}>{week}</Button>
+            {WEEKS.map((week) => (
+              <span key={week}>
+                <input type='checkbox' id={week} value={week} onChange={handleClick} disabled />
+                <label htmlFor={week}>{week}</label>
+              </span>
             ))}
           </Div>
         </Div>
@@ -87,7 +93,7 @@ const Div = styled.div`
   align-items: center;
 `;
 
-const Button = styled.button`
+const Button = styled.label`
   width: 95px;
   margin-right: 5px;
   height: 30px;
