@@ -7,6 +7,13 @@ import CCard from '../components/cCard';
 export default function Main() {
   const navigate = useNavigate();
   const [, setOpenModal] = React.useState(false);
+  const [schedules, setSchedules] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch('http://localhost:8000/schedules')
+      .then((response) => response.json())
+      .then(({ schedules }) => setSchedules(schedules));
+  }, []);
 
   const goAddClass = () => {
     navigate('/add');
@@ -15,6 +22,8 @@ export default function Main() {
   const handleOpenModal = () => {
     setOpenModal(true);
   };
+
+  console.log(schedules);
 
   return (
     <Wrapper>
