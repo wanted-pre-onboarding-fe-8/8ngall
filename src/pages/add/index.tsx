@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useEffect, useRef, useState } from 'react';
+import React, { ChangeEventHandler, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import CButton from '../../components/cButton';
 import styled from 'styled-components';
