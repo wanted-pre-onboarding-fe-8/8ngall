@@ -1,4 +1,5 @@
-import { format, addMinutes } from 'date-fns';
+import { format, addMinutes, compareAsc } from 'date-fns';
+import { ServerSideScheduleWrapper } from '../types';
 
 export const HOURS = ['12', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11'];
 export const MINUTES = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
@@ -68,4 +69,43 @@ export function splitString24(string24: string) {
 }
 export function combineString24(hour: string, minute: string) {
   return `${hour}:${minute}`;
+}
+
+export function checkSchedules(
+  totalSchedules: ServerSideScheduleWrapper,
+  selectedSchedule: {
+    start: Date;
+    end: Date;
+  },
+) {
+  const unavailableDays = [];
+  const { start, end } = selectedSchedule;
+  const weeks = Object.keys(totalSchedules);
+  for (const day of weeks) {
+    const daySchedules = totalSchedules[day];
+    for (const daySchedule of daySchedules) {
+      const { start: dayStart, end: dayEnd } = daySchedule;
+      const dayStartObj = string24ToObject(dayStart);
+      const dayEndObj = string24ToObject(dayEnd);
+
+      if (compareAsc(start, dayStartObj) === 1) {
+        if (compareAsc(start, dayEndObj) === -1) {
+          unavailableDays.push(day);
+          break;
+        }
+      }
+      if (compareAsc(end, dayStartObj) === 1) {
+        if (compareAsc(end, dayEndObj) === -1) {
+          unavailableDays.push(day);
+          break;
+        }
+      }
+      if (start.getHours() === dayStartObj.getHours()) {
+        unavailableDays.push(day);
+        break;
+      }
+    }
+  }
+
+  return unavailableDays;
 }

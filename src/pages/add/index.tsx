@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router';
 import CButton from '../../components/cButton';
 import styled from 'styled-components';
 import StartTimeSelector from './StartTimeSelector';
-import { objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
+import { checkSchedules, objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
 import RepeatButton from './RepeatButton';
 import { getWeekdayItem, setWeekdayItem } from '../../utils/storage';
-import { useAddSchedule } from '../../queries/schedule';
+import { useAddSchedule, useGetSchedules } from '../../queries/schedule';
+import { Weekdays } from '../../types';
 
 interface scheduleTime {
   start: Date;
@@ -36,6 +37,15 @@ export default function Add() {
     setSelectedWeekDays(new Set(parsingItem));
   }, []);
 
+  const { data: schedules } = useGetSchedules();
+  const [unavailableDays, setUnavailableDays] = useState<Weekdays[]>([]);
+  useEffect(() => {
+    if (schedules) {
+      const days = checkSchedules(schedules, schedule);
+      setUnavailableDays(days as Weekdays[]);
+    }
+  }, [schedules, schedule]);
+
   const handleTimeChange = (startTimeString12: string, endTimeString12: string) => {
     const startDate = string12ToObject(startTimeString12);
     const endDate = string12ToObject(endTimeString12);
@@ -56,6 +66,11 @@ export default function Add() {
   };
 
   const handleSaveSchedules = async (time: scheduleTime, weekdays: Set<string>) => {
+    if (selectedWeekDays.size === 0) {
+      alert('추가할 요일을 선택해주세요.');
+      return;
+    }
+
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
     for (const weekday of weekdays) {
@@ -65,11 +80,9 @@ export default function Add() {
       const startValue = scheduleList[1];
       const endValue = scheduleList[2];
       await mutateAsync({ weekday: weekValue, start: startValue, end: endValue });
-      console.log('mutateAsync아래');
     }
-    console.log('forEach아래');
     alert('시간표가 추가되었습니다.');
-    return goMain();
+    goMain();
   };
   return (
     <Wrapper>
@@ -84,10 +97,11 @@ export default function Add() {
           <Div>
             {WEEKS.map((week) => (
               <RepeatButton
+                key={week}
                 week={week}
                 checked={selectedWeekDays.has(week.toLowerCase())}
                 handleChange={handleRepeatButtonClick}
-                key={week}
+                isUnavailable={unavailableDays.includes(week.toLowerCase() as Weekdays)}
               />
             ))}
           </Div>
