@@ -13,6 +13,14 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import {
+  getHourIndexItem,
+  getMinuteIndexItem,
+  getTimeTypeItem,
+  setHourIndexItem,
+  setMinuteIndexItem,
+  setTimeTypeItem,
+} from '../../utils/storage';
 
 const MenuProps = {
   PaperProps: {
@@ -26,28 +34,34 @@ interface IStartTimeSelector {
   handleTimeChange: (startTimeString12: string, endTimeString12: string) => void;
 }
 
+const MINUTE_15_INDEX = 3;
+
 export default function StartTimeSelector({ handleTimeChange }: IStartTimeSelector) {
-  const [timeType, setTimeType] = useState<typeTimeType>(AM);
-  const [hourIndex, setHourIndex] = useState(0);
-  const [minuteIndex, setMinuteIndex] = useState(0);
+  const defaultHourIndex = +getHourIndexItem('0');
+  const defaultMinuteIndex = +getMinuteIndexItem('0');
+  const defaultTimeType = getTimeTypeItem(AM) as typeTimeType;
+
+  const [hourIndex, setHourIndex] = useState(defaultHourIndex);
+  const [minuteIndex, setMinuteIndex] = useState(defaultMinuteIndex);
+  const [timeType, setTimeType] = useState<typeTimeType>(defaultTimeType);
   const hours = HOURS;
   const minutes = MINUTES;
 
   const handleHourChange = (event: SelectChangeEvent) => {
-    const {
-      target: { value },
-    } = event;
+    const value = event.target.value;
     setHourIndex(+value);
+    clearMinuteIndex(timeType, +value);
   };
   const handleMinuteChange = (event: SelectChangeEvent) => {
-    const {
-      target: { value },
-    } = event;
+    const value = event.target.value;
     setMinuteIndex(+value);
   };
   const handleTypeChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
     if (newAlignment === null) return;
-    setTimeType(newAlignment as typeTimeType);
+
+    const type = newAlignment as typeTimeType;
+    setTimeType(type);
+    clearMinuteIndex(type, hourIndex);
   };
 
   useEffect(() => {
@@ -55,12 +69,34 @@ export default function StartTimeSelector({ handleTimeChange }: IStartTimeSelect
     const startMinute = minutes[minuteIndex];
     const startTimeString = combineString12(startHour, startMinute, timeType);
     const endTimeString = calcEndTime(startTimeString);
+
+    setHourIndexItem(hourIndex + '');
+    setMinuteIndexItem(minuteIndex + '');
+    setTimeTypeItem(timeType);
+
     handleTimeChange(startTimeString, endTimeString);
   }, [timeType, hourIndex, minuteIndex]);
 
+  const getIsDisabled = (minuteItemIndex: number) => {
+    return timeType === PM && hourIndex === hours.length - 1 && MINUTE_15_INDEX < minuteItemIndex;
+  };
+  const clearMinuteIndex = (timeType: typeTimeType, hourIndex: number) => {
+    if (timeType === PM && hourIndex === hours.length - 1) {
+      if (MINUTE_15_INDEX < minuteIndex) {
+        setMinuteIndex(MINUTE_15_INDEX);
+      }
+    }
+  };
+
   return (
     <Wrapper>
-      <Select value={hourIndex + ''} onChange={handleHourChange} MenuProps={MenuProps} size='small'>
+      <Select
+        value={hourIndex + ''}
+        onChange={handleHourChange}
+        MenuProps={MenuProps}
+        sx={{ width: 70 }}
+        size='small'
+      >
         {hours.map((hour, index) => (
           <MenuItem key={index} value={index}>
             {hour}
@@ -72,10 +108,11 @@ export default function StartTimeSelector({ handleTimeChange }: IStartTimeSelect
         value={minuteIndex + ''}
         onChange={handleMinuteChange}
         MenuProps={MenuProps}
+        sx={{ width: 70 }}
         size='small'
       >
         {minutes.map((hour, index) => (
-          <MenuItem key={index} value={index}>
+          <MenuItem key={index} value={index} disabled={getIsDisabled(index)}>
             {hour}
           </MenuItem>
         ))}
