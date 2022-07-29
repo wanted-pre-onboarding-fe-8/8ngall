@@ -51,3 +51,11 @@ function setStorageItem(key: string, value: string) {
     console.log(e);
   }
 }
+
+export function clearStorage() {
+  try {
+    localStorage.clear();
+  } catch (e) {
+    console.log(e);
+  }
+}

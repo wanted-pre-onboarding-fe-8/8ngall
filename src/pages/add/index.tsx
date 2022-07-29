@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import StartTimeSelector from './StartTimeSelector';
 import { checkSchedules, objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
 import RepeatButton from './RepeatButton';
-import { getWeekdayItem, setWeekdayItem } from '../../utils/storage';
+import { clearStorage, getWeekdayItem, setWeekdayItem } from '../../utils/storage';
 import { useAddSchedule, useGetSchedules } from '../../queries/schedule';
 import { Weekdays } from '../../types';
 
@@ -78,6 +78,7 @@ export default function Add() {
       await mutateAsync({ weekday, start: startTime, end: endTime });
     }
     alert('시간표가 추가되었습니다.');
+    clearStorage();
     goMain();
   };
   return (
