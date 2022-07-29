@@ -14,9 +14,11 @@ const DEFAULT_TIME: scheduleTime = {
   start: new Date(),
   end: new Date(),
 };
-const weekdays = ['monday', 'friday'];
+
 export default function Add() {
   const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
+  const selectedDays = useRef<Set<string>>(new Set<string>());
+  const formRef = useRef<HTMLFormElement>(null);
   const navigate = useNavigate();
   const goMain = () => {
     navigate('/');
@@ -27,32 +29,21 @@ export default function Add() {
     const endDate = string12ToObject(endTimeString12);
     setSchedule({ start: startDate, end: endDate });
   };
-  const selectedDays = useRef<Set<string>>(new Set<string>());
-  const formRef = useRef<HTMLFormElement>(null);
-  const [buttonClick, setButtonClick] = useState(false);
 
   useEffect(() => {
     formRef.current?.reset();
     selectedDays.current.clear();
-    console.log(selectedDays.current);
-  }, [buttonClick]);
-
-  const handleSubmit = () => {
-    console.log(selectedDays.current);
-    // goMain();
-  };
+  }, [schedule]);
 
   const handleClick = (week: string) => {
     if (selectedDays.current.has(week)) {
       selectedDays.current.delete(week);
     } else {
-      6840;
-
       selectedDays.current.add(week);
     }
   };
 
-  const handleSaveSchedules = (time: scheduleTime, weekdays: string[]) => {
+  const handleSaveSchedules = (time: scheduleTime, weekdays: Set<string>) => {
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
     weekdays.forEach((weekday) => {
@@ -61,8 +52,10 @@ export default function Add() {
       const weekValue = scheduleList[0];
       const startValue = scheduleList[1];
       const endValue = scheduleList[2];
+      console.log(scheduleList);
       // patchSchedules({ weekday: weekValue, start: startValue, end: endValue });
     });
+
     confirm('시간표가 추가되었습니다.');
     return goMain();
   };
@@ -92,7 +85,10 @@ export default function Add() {
         </Div>
       </Container>
       <ButtonDiv>
-        <CButton name={'save'} onClick={() => handleSaveSchedules(schedule, weekdays)}></CButton>
+        <CButton
+          name={'save'}
+          onClick={() => handleSaveSchedules(schedule, selectedDays.current)}
+        ></CButton>
       </ButtonDiv>
     </Wrapper>
   );
