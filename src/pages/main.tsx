@@ -4,6 +4,7 @@ import { useGetSchedules } from '../queries/schedule';
 import styled from 'styled-components';
 import CButton from '../components/cButton';
 import Timetable from '../components/timetable';
+import { CircularProgress } from '@mui/material';
 
 export default function Main() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ export default function Main() {
         <Title>Class schedule</Title>
         <CButton name={'Add Class schedule'} onClick={goAddClass} />
       </Header>
-      {isLoading ? <div>Loading...</div> : <Timetable schedules={schedules} />}
+      {isLoading ? <CircularProgress /> : <Timetable schedules={schedules} />}
     </Wrapper>
   );
 }
