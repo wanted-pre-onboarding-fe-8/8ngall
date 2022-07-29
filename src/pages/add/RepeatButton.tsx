@@ -5,9 +5,10 @@ interface RepeatButtonProps {
   week: string;
   checked: boolean;
   handleChange: ChangeEventHandler<HTMLInputElement>;
+  isUnavailable: boolean;
 }
 
-function RepeatButton({ week, handleChange, checked }: RepeatButtonProps) {
+function RepeatButton({ week, handleChange, checked, isUnavailable }: RepeatButtonProps) {
   return (
     <span key={week}>
       <Checkbox id={week} value={week.toLowerCase()} checked={checked} onChange={handleChange} />
