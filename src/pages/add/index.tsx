@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import CButton from '../../components/cButton';
 import styled from 'styled-components';
 import StartTimeSelector from './StartTimeSelector';
 import { objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
 import RepeatButton from './RepeatButton';
+import { getWeekdayItem, setWeekdayItem } from '../../utils/storage';
 
 interface scheduleTime {
   start: Date;
@@ -17,30 +18,39 @@ const DEFAULT_TIME: scheduleTime = {
 
 export default function Add() {
   const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
-  const selectedDays = useRef<Set<string>>(new Set<string>());
-  const formRef = useRef<HTMLFormElement>(null);
+  const [selectedWeekDays, setSelectedWeekDays] = useState<Set<string>>(new Set<string>());
   const navigate = useNavigate();
   const goMain = () => {
     navigate('/');
   };
 
-  useEffect(() => {
-    formRef.current?.reset();
-    selectedDays.current.clear();
-  }, [schedule]);
-
-  const handleRepeatButtonClick = (week: string) => {
-    if (selectedDays.current.has(week)) {
-      selectedDays.current.delete(week);
-    } else {
-      selectedDays.current.add(week);
-    }
+  const resetRepeatButton = () => {
+    setSelectedWeekDays(new Set<string>());
   };
+
+  useEffect(() => {
+    const localstorageItem = getWeekdayItem();
+    const parsingItem = JSON.parse(localstorageItem || '[]');
+    setSelectedWeekDays(new Set(parsingItem));
+  }, []);
 
   const handleTimeChange = (startTimeString12: string, endTimeString12: string) => {
     const startDate = string12ToObject(startTimeString12);
     const endDate = string12ToObject(endTimeString12);
     setSchedule({ start: startDate, end: endDate });
+    resetRepeatButton();
+  };
+
+  const handleRepeatButtonClick: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const week = event.target.value.toLowerCase();
+    const prevSelectedDays = new Set<string>(selectedWeekDays);
+    if (selectedWeekDays.has(week)) {
+      prevSelectedDays.delete(week);
+    } else {
+      prevSelectedDays.add(week);
+    }
+    setSelectedWeekDays(prevSelectedDays);
+    setWeekdayItem(prevSelectedDays);
   };
 
   const handleSaveSchedules = (time: scheduleTime, weekdays: Set<string>) => {
@@ -70,24 +80,21 @@ export default function Add() {
         <Div>
           <ListTitle>Repeat on</ListTitle>
           <Div>
-            <Form ref={formRef}>
-              {WEEKS.map((week) => (
-                <RepeatButton
-                  week={week}
-                  handleClick={() => {
-                    handleRepeatButtonClick(week);
-                  }}
-                  key={week}
-                />
-              ))}
-            </Form>
+            {WEEKS.map((week) => (
+              <RepeatButton
+                week={week}
+                checked={selectedWeekDays.has(week.toLowerCase())}
+                handleChange={handleRepeatButtonClick}
+                key={week}
+              />
+            ))}
           </Div>
         </Div>
       </Container>
       <ButtonDiv>
         <CButton
           name={'save'}
-          onClick={() => handleSaveSchedules(schedule, selectedDays.current)}
+          onClick={() => handleSaveSchedules(schedule, selectedWeekDays)}
         ></CButton>
       </ButtonDiv>
     </Wrapper>
@@ -130,5 +137,3 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 700;
 `;
-
-const Form = styled.form``;

@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { ChangeEventHandler } from 'react';
 import styled from 'styled-components';
 
 interface RepeatButtonProps {
   week: string;
-  handleClick: () => void;
+  checked: boolean;
+  handleChange: ChangeEventHandler<HTMLInputElement>;
 }
 
-function RepeatButton({ week, handleClick }: RepeatButtonProps) {
+function RepeatButton({ week, handleChange, checked }: RepeatButtonProps) {
   return (
     <span key={week}>
-      <Checkbox id={week} value={week} onClick={handleClick} />
+      <Checkbox id={week} value={week.toLowerCase()} checked={checked} onChange={handleChange} />
       <CheckboxLabel htmlFor={week}>{week}</CheckboxLabel>
     </span>
   );
