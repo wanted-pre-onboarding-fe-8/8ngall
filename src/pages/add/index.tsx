@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import StartTimeSelector from './StartTimeSelector';
 import { objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
 import RepeatButton from './RepeatButton';
+import { getWeekdayItem, setWeekdayItem } from '../../utils/storage';
 
 interface scheduleTime {
   start: Date;
@@ -18,8 +19,6 @@ const DEFAULT_TIME: scheduleTime = {
 export default function Add() {
   const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
   const [selectedWeekDays, setSelectedWeekDays] = useState<Set<string>>(new Set<string>());
-  // const selectedDays = useRef<Set<string>>(new Set<string>());
-  const formRef = useRef<HTMLFormElement>(null);
   const navigate = useNavigate();
   const goMain = () => {
     navigate('/');
@@ -30,8 +29,9 @@ export default function Add() {
   };
 
   useEffect(() => {
-    const test: Set<string> = new Set<string>(['monday', 'wednesday']);
-    setSelectedWeekDays(test);
+    const localstorageItem = getWeekdayItem();
+    const parsingItem = JSON.parse(localstorageItem || '[]');
+    setSelectedWeekDays(new Set(parsingItem));
   }, []);
 
   const handleTimeChange = (startTimeString12: string, endTimeString12: string) => {
@@ -50,6 +50,7 @@ export default function Add() {
       prevSelectedDays.add(week);
     }
     setSelectedWeekDays(prevSelectedDays);
+    setWeekdayItem(prevSelectedDays);
   };
 
   const handleSaveSchedules = (time: scheduleTime, weekdays: Set<string>) => {
@@ -79,16 +80,14 @@ export default function Add() {
         <Div>
           <ListTitle>Repeat on</ListTitle>
           <Div>
-            <Form ref={formRef}>
-              {WEEKS.map((week) => (
-                <RepeatButton
-                  week={week}
-                  checked={selectedWeekDays.has(week.toLowerCase())}
-                  handleChange={handleRepeatButtonClick}
-                  key={week}
-                />
-              ))}
-            </Form>
+            {WEEKS.map((week) => (
+              <RepeatButton
+                week={week}
+                checked={selectedWeekDays.has(week.toLowerCase())}
+                handleChange={handleRepeatButtonClick}
+                key={week}
+              />
+            ))}
           </Div>
         </Div>
       </Container>
@@ -138,5 +137,3 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 700;
 `;
-
-const Form = styled.form``;
