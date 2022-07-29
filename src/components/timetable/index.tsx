@@ -8,10 +8,16 @@ interface TimetableProps {
 }
 
 function Timetable({ schedules }: TimetableProps) {
-  const [, setOpenModal] = React.useState(false);
+  const handleDeleteTime = (event: React.SyntheticEvent, id: number) => {
+    if (confirm('수업을 삭제 하시겠습니까?')) {
+      deleteTime(id);
+    }
+  };
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
+  const deleteTime = (id: number) => {
+    fetch(`http://localhost:8000/schedules/${id}`, { method: 'DELETE' }).catch((error) => {
+      console.error(error);
+    });
   };
 
   return (
@@ -22,7 +28,7 @@ function Timetable({ schedules }: TimetableProps) {
           <Divider />
           <Schedule>
             {lectures.map((lecture: ServerSideSchedule) => (
-              <CCard key={lecture.id} lecture={lecture} onClick={handleOpenModal}></CCard>
+              <CCard key={lecture.id} lecture={lecture} onClick={handleDeleteTime}></CCard>
             ))}
           </Schedule>
         </Day>
