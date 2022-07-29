@@ -1,10 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export default function Header() {
+  const navigate = useNavigate();
+
   return (
     <Container>
-      <Logo src='logo.png' alt='logo' />
+      <Logo src='logo.png' alt='logo' onClick={() => navigate('/')} />
     </Container>
   );
 }
@@ -21,4 +24,5 @@ const Container = styled.header`
 const Logo = styled.img`
   padding-top: 8px;
   width: 76px;
+  cursor: pointer;
 `;
