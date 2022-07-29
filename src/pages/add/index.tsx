@@ -19,27 +19,24 @@ const DEFAULT_TIME: scheduleTime = {
 };
 
 export default function Add() {
-  const { mutateAsync } = useAddSchedule();
-  const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
-  const [selectedWeekDays, setSelectedWeekDays] = useState<Set<Weekdays>>(new Set());
+  const localstorageItem = getWeekdayItem();
+  const parsingItem = JSON.parse(localstorageItem || '[]');
   const navigate = useNavigate();
   const goMain = () => {
     navigate('/');
   };
 
-  const resetRepeatButton = () => {
-    setSelectedWeekDays(new Set());
-    setWeekdayItem(new Set());
-  };
+  const { mutateAsync } = useAddSchedule();
+  const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
+  const [selectedWeekDays, setSelectedWeekDays] = useState<Set<Weekdays>>(new Set(parsingItem));
 
   useEffect(() => {
-    const localstorageItem = getWeekdayItem();
-    const parsingItem = JSON.parse(localstorageItem || '[]');
-    setSelectedWeekDays(new Set(parsingItem));
-  }, []);
+    setWeekdayItem(selectedWeekDays);
+  }, [selectedWeekDays]);
 
   const { data: schedules } = useGetSchedules();
   const [unavailableDays, setUnavailableDays] = useState<Weekdays[]>([]);
+
   useEffect(() => {
     if (schedules) {
       const days = checkSchedules(schedules, schedule);
@@ -51,19 +48,21 @@ export default function Add() {
     const startDate = string12ToObject(startTimeString12);
     const endDate = string12ToObject(endTimeString12);
     setSchedule({ start: startDate, end: endDate });
-    resetRepeatButton();
+  };
+
+  const resetRepeatButton = () => {
+    setSelectedWeekDays(new Set());
   };
 
   const handleRepeatButtonClick: ChangeEventHandler<HTMLInputElement> = (event) => {
     const week = event.target.value.toLowerCase() as Weekdays;
-    const prevSelectedDays = new Set<Weekdays>(selectedWeekDays);
-    if (selectedWeekDays.has(week)) {
-      prevSelectedDays.delete(week);
-    } else {
-      prevSelectedDays.add(week);
-    }
-    setSelectedWeekDays(prevSelectedDays);
-    setWeekdayItem(prevSelectedDays);
+    setSelectedWeekDays((prev) => {
+      const newSelectedDays = new Set<Weekdays>(prev);
+      if (newSelectedDays.has(week)) newSelectedDays.delete(week);
+      else newSelectedDays.add(week);
+      setWeekdayItem(newSelectedDays);
+      return newSelectedDays;
+    });
   };
 
   const handleSaveSchedules = async (time: scheduleTime, weekdays: Set<Weekdays>) => {
@@ -71,7 +70,6 @@ export default function Add() {
       alert('추가할 요일을 선택해주세요.');
       return;
     }
-
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
     for (const weekday of weekdays) {
@@ -81,13 +79,17 @@ export default function Add() {
     clearStorage();
     goMain();
   };
+
   return (
     <Wrapper>
       <Title>Add Class schedule</Title>
       <Container>
         <Div>
           <ListTitle>Start time</ListTitle>
-          <StartTimeSelector handleTimeChange={handleTimeChange} />
+          <StartTimeSelector
+            handleTimeChange={handleTimeChange}
+            resetRepeatButton={resetRepeatButton}
+          />
         </Div>
         <Div>
           <ListTitle>Repeat on</ListTitle>

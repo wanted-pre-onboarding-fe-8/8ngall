@@ -32,11 +32,15 @@ const MenuProps = {
 
 interface IStartTimeSelector {
   handleTimeChange: (startTimeString12: string, endTimeString12: string) => void;
+  resetRepeatButton: () => void;
 }
 
 const MINUTE_15_INDEX = 3;
 
-export default function StartTimeSelector({ handleTimeChange }: IStartTimeSelector) {
+export default function StartTimeSelector({
+  handleTimeChange,
+  resetRepeatButton,
+}: IStartTimeSelector) {
   const defaultHourIndex = +getHourIndexItem('0');
   const defaultMinuteIndex = +getMinuteIndexItem('0');
   const defaultTimeType = getTimeTypeItem(AM) as typeTimeType;
@@ -51,10 +55,12 @@ export default function StartTimeSelector({ handleTimeChange }: IStartTimeSelect
     const value = event.target.value;
     setHourIndex(+value);
     clearMinuteIndex(timeType, +value);
+    resetRepeatButton();
   };
   const handleMinuteChange = (event: SelectChangeEvent) => {
     const value = event.target.value;
     setMinuteIndex(+value);
+    resetRepeatButton();
   };
   const handleTypeChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string) => {
     if (newAlignment === null) return;
@@ -62,6 +68,7 @@ export default function StartTimeSelector({ handleTimeChange }: IStartTimeSelect
     const type = newAlignment as typeTimeType;
     setTimeType(type);
     clearMinuteIndex(type, hourIndex);
+    resetRepeatButton();
   };
 
   useEffect(() => {
