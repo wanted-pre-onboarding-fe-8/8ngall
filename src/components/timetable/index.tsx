@@ -21,6 +21,7 @@ function Timetable({ schedules }: TimetableProps) {
 
   const handleDeleteTime = async () => {
     await mutateAsync(selectedLectureId);
+    setOpenDialog(false);
   };
 
   return isLoading ? (
