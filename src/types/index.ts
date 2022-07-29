@@ -12,7 +12,7 @@ export type Weekdays =
 
 export interface ISchedule {
   id?: number;
-  weekday: string;
+  weekday: Weekdays;
   start: string;
   end: string;
 }

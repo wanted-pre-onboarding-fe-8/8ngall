@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import StartTimeSelector from './StartTimeSelector';
 import { checkSchedules, objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
 import RepeatButton from './RepeatButton';
-import { getWeekdayItem, setWeekdayItem } from '../../utils/storage';
+import { clearStorage, getWeekdayItem, setWeekdayItem } from '../../utils/storage';
 import { useAddSchedule, useGetSchedules } from '../../queries/schedule';
 import { Weekdays } from '../../types';
 
@@ -19,26 +19,24 @@ const DEFAULT_TIME: scheduleTime = {
 };
 
 export default function Add() {
-  const { mutateAsync } = useAddSchedule();
-  const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
-  const [selectedWeekDays, setSelectedWeekDays] = useState<Set<string>>(new Set<string>());
+  const localstorageItem = getWeekdayItem();
+  const parsingItem = JSON.parse(localstorageItem || '[]');
   const navigate = useNavigate();
   const goMain = () => {
     navigate('/');
   };
 
-  const resetRepeatButton = () => {
-    setSelectedWeekDays(new Set<string>());
-  };
+  const { mutateAsync } = useAddSchedule();
+  const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
+  const [selectedWeekDays, setSelectedWeekDays] = useState<Set<Weekdays>>(new Set(parsingItem));
 
   useEffect(() => {
-    const localstorageItem = getWeekdayItem();
-    const parsingItem = JSON.parse(localstorageItem || '[]');
-    setSelectedWeekDays(new Set(parsingItem));
-  }, []);
+    setWeekdayItem(selectedWeekDays);
+  }, [selectedWeekDays]);
 
   const { data: schedules } = useGetSchedules();
   const [unavailableDays, setUnavailableDays] = useState<Weekdays[]>([]);
+
   useEffect(() => {
     if (schedules) {
       const days = checkSchedules(schedules, schedule);
@@ -50,47 +48,48 @@ export default function Add() {
     const startDate = string12ToObject(startTimeString12);
     const endDate = string12ToObject(endTimeString12);
     setSchedule({ start: startDate, end: endDate });
-    resetRepeatButton();
+  };
+
+  const resetRepeatButton = () => {
+    setSelectedWeekDays(new Set());
   };
 
   const handleRepeatButtonClick: ChangeEventHandler<HTMLInputElement> = (event) => {
-    const week = event.target.value.toLowerCase();
-    const prevSelectedDays = new Set<string>(selectedWeekDays);
-    if (selectedWeekDays.has(week)) {
-      prevSelectedDays.delete(week);
-    } else {
-      prevSelectedDays.add(week);
-    }
-    setSelectedWeekDays(prevSelectedDays);
-    setWeekdayItem(prevSelectedDays);
+    const week = event.target.value.toLowerCase() as Weekdays;
+    setSelectedWeekDays((prev) => {
+      const newSelectedDays = new Set<Weekdays>(prev);
+      if (newSelectedDays.has(week)) newSelectedDays.delete(week);
+      else newSelectedDays.add(week);
+      setWeekdayItem(newSelectedDays);
+      return newSelectedDays;
+    });
   };
 
-  const handleSaveSchedules = async (time: scheduleTime, weekdays: Set<string>) => {
+  const handleSaveSchedules = async (time: scheduleTime, weekdays: Set<Weekdays>) => {
     if (selectedWeekDays.size === 0) {
       alert('추가할 요일을 선택해주세요.');
       return;
     }
-
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
     for (const weekday of weekdays) {
-      const scheduleList: string[] = [];
-      scheduleList.push(weekday, startTime, endTime);
-      const weekValue = scheduleList[0];
-      const startValue = scheduleList[1];
-      const endValue = scheduleList[2];
-      await mutateAsync({ weekday: weekValue, start: startValue, end: endValue });
+      await mutateAsync({ weekday, start: startTime, end: endTime });
     }
     alert('시간표가 추가되었습니다.');
+    clearStorage();
     goMain();
   };
+
   return (
     <Wrapper>
       <Title>Add Class schedule</Title>
       <Container>
         <Div>
           <ListTitle>Start time</ListTitle>
-          <StartTimeSelector handleTimeChange={handleTimeChange} />
+          <StartTimeSelector
+            handleTimeChange={handleTimeChange}
+            resetRepeatButton={resetRepeatButton}
+          />
         </Div>
         <Div>
           <ListTitle>Repeat on</ListTitle>
@@ -99,7 +98,7 @@ export default function Add() {
               <RepeatButton
                 key={week}
                 week={week}
-                checked={selectedWeekDays.has(week.toLowerCase())}
+                checked={selectedWeekDays.has(week.toLowerCase() as Weekdays)}
                 handleChange={handleRepeatButtonClick}
                 isUnavailable={unavailableDays.includes(week.toLowerCase() as Weekdays)}
               />

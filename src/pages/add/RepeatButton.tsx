@@ -11,7 +11,13 @@ interface RepeatButtonProps {
 function RepeatButton({ week, handleChange, checked, isUnavailable }: RepeatButtonProps) {
   return (
     <span key={week}>
-      <Checkbox id={week} value={week.toLowerCase()} checked={checked} onChange={handleChange} />
+      <Checkbox
+        id={week}
+        value={week.toLowerCase()}
+        checked={checked}
+        onChange={handleChange}
+        disabled={isUnavailable}
+      />
       <CheckboxLabel htmlFor={week}>{week}</CheckboxLabel>
     </span>
   );
