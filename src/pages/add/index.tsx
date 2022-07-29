@@ -29,6 +29,7 @@ export default function Add() {
 
   const resetRepeatButton = () => {
     setSelectedWeekDays(new Set());
+    setWeekdayItem(new Set());
   };
 
   useEffect(() => {
