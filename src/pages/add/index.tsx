@@ -1,10 +1,10 @@
-import React, { ChangeEventHandler, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import CButton from '../../components/cButton';
-import { Button as ButtonMui } from '@mui/material';
 import styled from 'styled-components';
 import StartTimeSelector from './StartTimeSelector';
 import { objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
+import RepeatButton from './RepeatButton';
 
 interface scheduleTime {
   start: Date;
@@ -38,13 +38,16 @@ export default function Add() {
   }, [buttonClick]);
 
   const handleSubmit = () => {
-    goMain();
+    console.log(selectedDays.current);
+    // goMain();
   };
 
   const handleClick = (week: string) => {
     if (selectedDays.current.has(week)) {
       selectedDays.current.delete(week);
     } else {
+      6840;
+
       selectedDays.current.add(week);
     }
   };
@@ -71,26 +74,20 @@ export default function Add() {
           <ListTitle>Start time</ListTitle>
           <StartTimeSelector handleTimeChange={handleTimeChange} />
         </Div>
-        <ButtonMui
-          onClick={(e) => {
-            e.preventDefault();
-            setButtonClick((pre) => !pre);
-          }}
-        >
-          리셋하자
-        </ButtonMui>
-
         <Div>
           <ListTitle>Repeat on</ListTitle>
           <Div>
-            <form ref={formRef}>
+            <Form ref={formRef}>
               {WEEKS.map((week) => (
-                <span key={week}>
-                  <Checkbox id={week} value={week} onClick={() => handleClick(week)} />
-                  <CheckboxLabel htmlFor={week}>{week}</CheckboxLabel>
-                </span>
+                <RepeatButton
+                  week={week}
+                  handleClick={() => {
+                    handleClick(week);
+                  }}
+                  key={week}
+                />
               ))}
-            </form>
+            </Form>
           </Div>
         </Div>
       </Container>
@@ -138,27 +135,4 @@ const Title = styled.div`
   font-weight: 700;
 `;
 
-const Checkbox = styled.input.attrs({ type: 'checkbox' })<{ disabled?: boolean }>`
-  display: none;
-  &:checked + label {
-    background-color: #b1b1b1;
-    color: white;
-  }
-  &:disabled + label {
-    cursor: default;
-    color: #b1b1b1;
-  }
-`;
-
-const CheckboxLabel = styled.label`
-  display: inline-block;
-  width: 130px;
-  margin-right: 5px;
-  height: 30px;
-  outline: 0;
-  text-align: center;
-  background-color: #fff;
-  border: 0.5px solid #b1b1b1;
-  padding: 5px;
-  cursor: pointer;
-`;
+const Form = styled.form``;
