@@ -21,7 +21,7 @@ function cCard({ lecture, onClick }: cCardProps) {
         <Time>{startTime} -</Time>
         <Time>{endTime}</Time>
       </Times>
-      <StyledClearIcon sx={{ fontSize: 10 }} onClick={() => onClick(id)} />
+      <StyledClearIcon sx={{ fontSize: 11 }} onClick={() => onClick(id)} />
     </Container>
   );
 }
@@ -48,4 +48,5 @@ const StyledClearIcon = styled(ClearIcon)`
   background-color: #b4b4b4;
   color: #efeeef;
   border-radius: 50%;
+  cursor: pointer;
 `;
