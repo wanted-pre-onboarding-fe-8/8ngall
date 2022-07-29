@@ -30,10 +30,10 @@ export default function Add() {
   const handleSaveSchedules = (time: scheduleTime, weekdays: string[]) => {
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
-
+    const seconds = ':00';
     weekdays.forEach((weekday) => {
       const scheduleList: string[] = [];
-      scheduleList.push(weekday, startTime, endTime);
+      scheduleList.push(weekday, startTime + seconds, endTime + seconds);
       const weekValue = scheduleList[0];
       const startValue = scheduleList[1];
       const endValue = scheduleList[2];
