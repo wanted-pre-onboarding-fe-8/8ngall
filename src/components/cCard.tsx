@@ -5,16 +5,16 @@ import styled from 'styled-components';
 
 interface cCardProps {
   lecture: ServerSideSchedule;
-  onClick: () => void;
+  onClick: (id: number) => void;
 }
 
 function cCard({ lecture, onClick }: cCardProps) {
-  const { start, end } = lecture;
+  const { id, start, end } = lecture;
   return (
     <Card>
       <Left>{`${start} ~ ${end}`}</Left>
       <Right>
-        <RemoveButton onClick={onClick}>
+        <RemoveButton onClick={() => onClick(id)}>
           <ClearIcon sx={{ fontSize: 10 }} />
         </RemoveButton>
       </Right>

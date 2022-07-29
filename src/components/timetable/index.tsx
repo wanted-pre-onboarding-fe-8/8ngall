@@ -2,16 +2,29 @@ import React from 'react';
 import CCard from '../cCard';
 import styled from 'styled-components';
 import { ServerSideScheduleWrapper, ServerSideSchedule } from '../../types';
+import DeleteDialog from './DeleteDialog';
 
 interface TimetableProps {
   schedules: ServerSideScheduleWrapper | [];
 }
 
 function Timetable({ schedules }: TimetableProps) {
-  const [, setOpenModal] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [selectedLectureId, setSelectedLectureId] = React.useState(-1);
 
-  const handleOpenModal = () => {
-    setOpenModal(true);
+  const handleDeleteClick = (id: number) => {
+    setSelectedLectureId(id);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteTime = () => {
+    deleteTime(selectedLectureId);
+  };
+
+  const deleteTime = (id: number) => {
+    fetch(`http://localhost:8000/schedules/${id}`, { method: 'DELETE' }).catch((error) => {
+      console.error(error);
+    });
   };
 
   return (
@@ -22,11 +35,16 @@ function Timetable({ schedules }: TimetableProps) {
           <Divider />
           <Schedule>
             {lectures.map((lecture: ServerSideSchedule) => (
-              <CCard key={lecture.id} lecture={lecture} onClick={handleOpenModal}></CCard>
+              <CCard key={lecture.id} lecture={lecture} onClick={handleDeleteClick}></CCard>
             ))}
           </Schedule>
         </Day>
       ))}
+      <DeleteDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onConfirm={handleDeleteTime}
+      />
     </Container>
   );
 }
