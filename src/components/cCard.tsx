@@ -2,6 +2,7 @@ import React from 'react';
 import { ServerSideSchedule } from '../types';
 import ClearIcon from '@mui/icons-material/Clear';
 import styled from 'styled-components';
+import { string24ToString12 } from '../utils/dateTimeHelper';
 
 interface cCardProps {
   lecture: ServerSideSchedule;
@@ -10,55 +11,41 @@ interface cCardProps {
 
 function cCard({ lecture, onClick }: cCardProps) {
   const { id, start, end } = lecture;
+
+  const startTime = string24ToString12(start);
+  const endTime = string24ToString12(end);
+
   return (
-    <Card>
-      <Left>{`${start} ~ ${end}`}</Left>
-      <Right>
-        <RemoveButton onClick={() => onClick(id)}>
-          <ClearIcon sx={{ fontSize: 10 }} />
-        </RemoveButton>
-      </Right>
-    </Card>
+    <Container>
+      <Times>
+        <Time>{startTime} -</Time>
+        <Time>{endTime}</Time>
+      </Times>
+      <StyledClearIcon sx={{ fontSize: 10 }} onClick={() => onClick(id)} />
+    </Container>
   );
 }
 
 export default cCard;
 
-const Card = styled.div`
-  margin-top: 10px;
-  position: relative;
-  width: 90px;
-  height: 35px;
-  background-color: #ececec;
-  border-radius: 5px;
-  &:hover {
-    transition-duration: 300ms;
-    box-shadow: 1px 1px 1px 1px #b1b1b1;
-  }
+const Container = styled.div`
+  margin: 6px 0;
+  padding: 6px;
+  border-radius: 4px;
+  background-color: #efeeef;
+  display: flex;
+  gap: 4px;
+  flex-direction: row;
 `;
-
-const Left = styled.div`
-  font-size: 12px;
-  padding: 2px 5px;
-  color: #7c7c7c;
+const Times = styled.div``;
+const Time = styled.div`
+  color: #747474;
 `;
-
-const Right = styled.div``;
-
-const RemoveButton = styled.span`
+const StyledClearIcon = styled(ClearIcon)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 12px;
-  height: 12px;
+  background-color: #b4b4b4;
+  color: #efeeef;
   border-radius: 50%;
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background-color: #ababab;
-  color: #fff;
-  &:hover {
-    cursor: pointer;
-    transform: scale(1.1);
-  }
 `;

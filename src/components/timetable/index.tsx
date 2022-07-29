@@ -1,9 +1,10 @@
 import React from 'react';
 import CCard from '../cCard';
 import styled from 'styled-components';
-import { ServerSideScheduleWrapper, ServerSideSchedule } from '../../types';
 import DeleteDialog from './DeleteDialog';
+import { ServerSideScheduleWrapper, ServerSideSchedule } from '../../types';
 import { useDeleteScheduleById } from '../../queries/schedule';
+import CircularProgress from '@mui/material/CircularProgress';
 
 interface TimetableProps {
   schedules: ServerSideScheduleWrapper | [];
@@ -25,7 +26,7 @@ function Timetable({ schedules }: TimetableProps) {
   };
 
   return isLoading ? (
-    <div>Loading...</div>
+    <CircularProgress />
   ) : (
     <Container>
       {Object.entries(schedules).map(([day, lectures]) => (
