@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import StartTimeSelector from './StartTimeSelector';
 import { objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
-// import axios from 'axios';
 
 interface scheduleTime {
   start: Date;
@@ -43,10 +42,6 @@ export default function Add() {
     alert('시간표가 추가되었습니다.');
     return goMain();
   };
-  // const patchSchedules = async (data = {}) => {
-  //   const response = await axios.post('http://localhost:8000/schedules', data);
-  //   return response;
-  // };
   return (
     <Wrapper>
       <Title>Add Class schedule</Title>
