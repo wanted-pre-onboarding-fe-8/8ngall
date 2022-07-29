@@ -10,7 +10,7 @@ export default function Main() {
   const [schedules, setSchedules] = React.useState<ServerSideScheduleWrapper | []>([]);
 
   React.useEffect(() => {
-    fetch('http://localhost:8000/schedules')
+    fetch('http://localhost:8000/schedules?_sort=start&_order=asc')
       .then((response) => response.json())
       .then(({ schedules }) => setSchedules(schedules));
   }, []);
