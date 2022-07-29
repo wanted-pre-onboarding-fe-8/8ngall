@@ -2,6 +2,7 @@ import React from 'react';
 import CButton from '../../components/cButton';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
+import StartTimeSelector from './StartTimeSelector';
 
 export default function Add() {
   const navigate = useNavigate();
@@ -10,12 +11,17 @@ export default function Add() {
     navigate('/');
   };
 
+  const handleTimeChange = (startTimeString12: string, endTimeString12: string) => {
+    console.log(startTimeString12, endTimeString12);
+  };
+
   return (
     <Wrapper>
       <Title>Add Class schedule</Title>
       <Container>
         <Div>
           <ListTitle>Start time</ListTitle>
+          <StartTimeSelector handleTimeChange={handleTimeChange} />
         </Div>
 
         <Div>
@@ -33,8 +39,6 @@ export default function Add() {
     </Wrapper>
   );
 }
-
-const TIME_ARRAY = ['05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
 
 const WEEKS = ['Monday', 'TuesDay', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
