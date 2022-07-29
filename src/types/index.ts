@@ -11,10 +11,10 @@ export type Weekdays =
   | typeof SUNDAY;
 
 export interface ISchedule {
-  id: number;
-  weekday: Weekdays;
-  start: Date;
-  end: Date;
+  id?: number;
+  weekday: string;
+  start: string;
+  end: string;
 }
 export type ISchedules = ISchedule[];
 
