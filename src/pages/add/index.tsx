@@ -21,14 +21,14 @@ const DEFAULT_TIME: scheduleTime = {
 export default function Add() {
   const { mutateAsync } = useAddSchedule();
   const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
-  const [selectedWeekDays, setSelectedWeekDays] = useState<Set<string>>(new Set<string>());
+  const [selectedWeekDays, setSelectedWeekDays] = useState<Set<Weekdays>>(new Set());
   const navigate = useNavigate();
   const goMain = () => {
     navigate('/');
   };
 
   const resetRepeatButton = () => {
-    setSelectedWeekDays(new Set<string>());
+    setSelectedWeekDays(new Set());
   };
 
   useEffect(() => {
@@ -54,8 +54,8 @@ export default function Add() {
   };
 
   const handleRepeatButtonClick: ChangeEventHandler<HTMLInputElement> = (event) => {
-    const week = event.target.value.toLowerCase();
-    const prevSelectedDays = new Set<string>(selectedWeekDays);
+    const week = event.target.value.toLowerCase() as Weekdays;
+    const prevSelectedDays = new Set<Weekdays>(selectedWeekDays);
     if (selectedWeekDays.has(week)) {
       prevSelectedDays.delete(week);
     } else {
@@ -65,7 +65,7 @@ export default function Add() {
     setWeekdayItem(prevSelectedDays);
   };
 
-  const handleSaveSchedules = async (time: scheduleTime, weekdays: Set<string>) => {
+  const handleSaveSchedules = async (time: scheduleTime, weekdays: Set<Weekdays>) => {
     if (selectedWeekDays.size === 0) {
       alert('추가할 요일을 선택해주세요.');
       return;
@@ -74,12 +74,7 @@ export default function Add() {
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
     for (const weekday of weekdays) {
-      const scheduleList: string[] = [];
-      scheduleList.push(weekday, startTime, endTime);
-      const weekValue = scheduleList[0];
-      const startValue = scheduleList[1];
-      const endValue = scheduleList[2];
-      await mutateAsync({ weekday: weekValue, start: startValue, end: endValue });
+      await mutateAsync({ weekday, start: startTime, end: endTime });
     }
     alert('시간표가 추가되었습니다.');
     goMain();
@@ -99,7 +94,7 @@ export default function Add() {
               <RepeatButton
                 key={week}
                 week={week}
-                checked={selectedWeekDays.has(week.toLowerCase())}
+                checked={selectedWeekDays.has(week.toLowerCase() as Weekdays)}
                 handleChange={handleRepeatButtonClick}
                 isUnavailable={unavailableDays.includes(week.toLowerCase() as Weekdays)}
               />
