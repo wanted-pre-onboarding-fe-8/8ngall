@@ -24,23 +24,23 @@ export default function Add() {
     navigate('/');
   };
 
-  const handleTimeChange = (startTimeString12: string, endTimeString12: string) => {
-    const startDate = string12ToObject(startTimeString12);
-    const endDate = string12ToObject(endTimeString12);
-    setSchedule({ start: startDate, end: endDate });
-  };
-
   useEffect(() => {
     formRef.current?.reset();
     selectedDays.current.clear();
   }, [schedule]);
 
-  const handleClick = (week: string) => {
+  const handleRepeatButtonClick = (week: string) => {
     if (selectedDays.current.has(week)) {
       selectedDays.current.delete(week);
     } else {
       selectedDays.current.add(week);
     }
+  };
+
+  const handleTimeChange = (startTimeString12: string, endTimeString12: string) => {
+    const startDate = string12ToObject(startTimeString12);
+    const endDate = string12ToObject(endTimeString12);
+    setSchedule({ start: startDate, end: endDate });
   };
 
   const handleSaveSchedules = (time: scheduleTime, weekdays: Set<string>) => {
@@ -75,7 +75,7 @@ export default function Add() {
                 <RepeatButton
                   week={week}
                   handleClick={() => {
-                    handleClick(week);
+                    handleRepeatButtonClick(week);
                   }}
                   key={week}
                 />
