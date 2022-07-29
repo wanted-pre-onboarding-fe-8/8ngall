@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 interface cCardProps {
   lecture: ServerSideSchedule;
-  onClick: (event: React.SyntheticEvent, id: number) => void;
+  onClick: (id: number) => void;
 }
 
 function cCard({ lecture, onClick }: cCardProps) {
@@ -14,7 +14,7 @@ function cCard({ lecture, onClick }: cCardProps) {
     <Card>
       <Left>{`${start} ~ ${end}`}</Left>
       <Right>
-        <RemoveButton onClick={(event) => onClick(event, id)}>
+        <RemoveButton onClick={() => onClick(id)}>
           <ClearIcon sx={{ fontSize: 10 }} />
         </RemoveButton>
       </Right>

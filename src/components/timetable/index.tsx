@@ -2,16 +2,23 @@ import React from 'react';
 import CCard from '../cCard';
 import styled from 'styled-components';
 import { ServerSideScheduleWrapper, ServerSideSchedule } from '../../types';
+import DeleteDialog from './DeleteDialog';
 
 interface TimetableProps {
   schedules: ServerSideScheduleWrapper | [];
 }
 
 function Timetable({ schedules }: TimetableProps) {
-  const handleDeleteTime = (event: React.SyntheticEvent, id: number) => {
-    if (confirm('수업을 삭제 하시겠습니까?')) {
-      deleteTime(id);
-    }
+  const [openDialog, setOpenDialog] = React.useState(false);
+  const [selectedLectureId, setSelectedLectureId] = React.useState(-1);
+
+  const handleDeleteClick = (id: number) => {
+    setSelectedLectureId(id);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteTime = () => {
+    deleteTime(selectedLectureId);
   };
 
   const deleteTime = (id: number) => {
@@ -28,11 +35,16 @@ function Timetable({ schedules }: TimetableProps) {
           <Divider />
           <Schedule>
             {lectures.map((lecture: ServerSideSchedule) => (
-              <CCard key={lecture.id} lecture={lecture} onClick={handleDeleteTime}></CCard>
+              <CCard key={lecture.id} lecture={lecture} onClick={handleDeleteClick}></CCard>
             ))}
           </Schedule>
         </Day>
       ))}
+      <DeleteDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onConfirm={handleDeleteTime}
+      />
     </Container>
   );
 }
