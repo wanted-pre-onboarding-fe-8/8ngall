@@ -2,7 +2,6 @@ import React from 'react';
 import CCard from '../cCard';
 import styled from 'styled-components';
 import { ServerSideScheduleWrapper, ServerSideSchedule } from '../../types';
-import { sortLecturesByStartTime } from '../../utils/helpers/sort';
 
 interface TimetableProps {
   schedules: ServerSideScheduleWrapper | [];
@@ -22,7 +21,7 @@ function Timetable({ schedules }: TimetableProps) {
           <Title>{day}</Title>
           <Divider />
           <Schedule>
-            {sortLecturesByStartTime({ lectures: lectures }).map((lecture: ServerSideSchedule) => (
+            {lectures.map((lecture: ServerSideSchedule) => (
               <CCard key={lecture.id} lecture={lecture} onClick={handleOpenModal}></CCard>
             ))}
           </Schedule>
