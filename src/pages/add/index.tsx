@@ -1,6 +1,7 @@
-import React, { ChangeEventHandler, useState, useRef } from 'react';
+import React, { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import CButton from '../../components/cButton';
+import { Button as ButtonMui } from '@mui/material';
 import styled from 'styled-components';
 import StartTimeSelector from './StartTimeSelector';
 import { objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
@@ -27,24 +28,24 @@ export default function Add() {
     setSchedule({ start: startDate, end: endDate });
   };
   const selectedDays = useRef<Set<string>>(new Set<string>());
+  const formRef = useRef<HTMLFormElement>(null);
+  const [buttonClick, setButtonClick] = useState(false);
 
-  const makeRequestData = (selectedWeekday: Set<string>) => {
-    const mockTime = { start: '20:05:00', end: '20:45:00' };
-    selectedWeekday.forEach((element) => {
-      console.log({ ...mockTime, weekday: element.toLowerCase() });
-    });
-  };
+  useEffect(() => {
+    formRef.current?.reset();
+    selectedDays.current.clear();
+    console.log(selectedDays.current);
+  }, [buttonClick]);
 
   const handleSubmit = () => {
-    makeRequestData(selectedDays.current);
     goMain();
   };
 
-  const handleClick: ChangeEventHandler<HTMLInputElement> = (event) => {
-    if (selectedDays.current.has(event.target.value)) {
-      selectedDays.current.delete(event.target.value);
+  const handleClick = (week: string) => {
+    if (selectedDays.current.has(week)) {
+      selectedDays.current.delete(week);
     } else {
-      selectedDays.current.add(event.target.value);
+      selectedDays.current.add(week);
     }
   };
 
@@ -70,16 +71,26 @@ export default function Add() {
           <ListTitle>Start time</ListTitle>
           <StartTimeSelector handleTimeChange={handleTimeChange} />
         </Div>
+        <ButtonMui
+          onClick={(e) => {
+            e.preventDefault();
+            setButtonClick((pre) => !pre);
+          }}
+        >
+          리셋하자
+        </ButtonMui>
 
         <Div>
           <ListTitle>Repeat on</ListTitle>
           <Div>
-            {WEEKS.map((week) => (
-              <span key={week}>
-                <Checkbox id={week} value={week} onChange={handleClick} disabled />
-                <CheckboxLabel htmlFor={week}>{week}</CheckboxLabel>
-              </span>
-            ))}
+            <form ref={formRef}>
+              {WEEKS.map((week) => (
+                <span key={week}>
+                  <Checkbox id={week} value={week} onClick={() => handleClick(week)} />
+                  <CheckboxLabel htmlFor={week}>{week}</CheckboxLabel>
+                </span>
+              ))}
+            </form>
           </Div>
         </Div>
       </Container>
@@ -111,15 +122,6 @@ const Div = styled.div`
   align-items: center;
 `;
 
-const Button = styled.label`
-  width: 95px;
-  margin-right: 5px;
-  height: 30px;
-  outline: 0;
-  background-color: #fff;
-  border: 0.5px solid #b1b1b1;
-`;
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -136,7 +138,7 @@ const Title = styled.div`
   font-weight: 700;
 `;
 
-const Checkbox = styled.input.attrs({ type: 'checkbox' })<{ disabled: boolean }>`
+const Checkbox = styled.input.attrs({ type: 'checkbox' })<{ disabled?: boolean }>`
   display: none;
   &:checked + label {
     background-color: #b1b1b1;
