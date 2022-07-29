@@ -66,6 +66,11 @@ export default function Add() {
   };
 
   const handleSaveSchedules = async (time: scheduleTime, weekdays: Set<string>) => {
+    if (selectedWeekDays.size === 0) {
+      alert('추가할 요일을 선택해주세요.');
+      return;
+    }
+
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
     for (const weekday of weekdays) {
