@@ -32,18 +32,20 @@ const Container = styled.div`
   margin: 6px 0;
   padding: 6px;
   border-radius: 4px;
-  background-color: #ececec;
+  background-color: #efeeef;
   display: flex;
   gap: 4px;
   flex-direction: row;
 `;
 const Times = styled.div``;
-const Time = styled.div``;
+const Time = styled.div`
+  color: #747474;
+`;
 const StyledClearIcon = styled(ClearIcon)`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ababab;
-  color: #fff;
+  background-color: #b4b4b4;
+  color: #efeeef;
   border-radius: 50%;
 `;
