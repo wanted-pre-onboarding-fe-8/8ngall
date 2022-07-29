@@ -1,20 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CButton from '../../components/cButton';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import StartTimeSelector from './StartTimeSelector';
+import { objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
+// import axios from 'axios';
 
+interface scheduleTime {
+  start: Date;
+  end: Date;
+}
+const DEFAULT_TIME: scheduleTime = {
+  start: new Date(),
+  end: new Date(),
+};
+const weekdays = ['monday', 'friday'];
 export default function Add() {
+  const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
   const navigate = useNavigate();
-
   const goMain = () => {
     navigate('/');
   };
 
   const handleTimeChange = (startTimeString12: string, endTimeString12: string) => {
-    console.log(startTimeString12, endTimeString12);
+    const startDate = string12ToObject(startTimeString12);
+    const endDate = string12ToObject(endTimeString12);
+    setSchedule({ start: startDate, end: endDate });
   };
 
+  const handleSaveSchedules = (time: scheduleTime, weekdays: string[]) => {
+    const startTime = objectToString24(time.start);
+    const endTime = objectToString24(time.end);
+
+    weekdays.forEach((weekday) => {
+      const scheduleList: string[] = [];
+      scheduleList.push(weekday, startTime, endTime);
+      const weekValue = scheduleList[0];
+      const startValue = scheduleList[1];
+      const endValue = scheduleList[2];
+      // patchSchedules({ weekday: weekValue, start: startValue, end: endValue });
+    });
+    alert('시간표가 추가되었습니다.');
+    return goMain();
+  };
+  // const patchSchedules = async (data = {}) => {
+  //   const response = await axios.post('http://localhost:8000/schedules', data);
+  //   return response;
+  // };
   return (
     <Wrapper>
       <Title>Add Class schedule</Title>
@@ -34,7 +66,7 @@ export default function Add() {
         </Div>
       </Container>
       <ButtonDiv>
-        <CButton name={'save'} onClick={goMain}></CButton>
+        <CButton name={'save'} onClick={() => handleSaveSchedules(schedule, weekdays)}></CButton>
       </ButtonDiv>
     </Wrapper>
   );
