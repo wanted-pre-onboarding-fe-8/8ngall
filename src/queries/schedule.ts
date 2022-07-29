@@ -3,7 +3,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { ServerSideSchedule, ServerSideSchedules } from '../types';
 
 export function useGetSchedules() {
-  return useQuery(['schedules'], () => httpClient.get<ServerSideSchedules>('schedules'));
+  const query = '';
+  return useQuery(['schedules'], () => httpClient.get<ServerSideSchedules>(`schedules?${query}`));
 }
 
 export function useAddSchedule() {
