@@ -58,7 +58,7 @@ export default function Add() {
   const handleSaveSchedules = async (time: scheduleTime, weekdays: Set<string>) => {
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
-    weekdays.forEach(async (weekday) => {
+    for (const weekday of weekdays) {
       const scheduleList: string[] = [];
       scheduleList.push(weekday, startTime, endTime);
       const weekValue = scheduleList[0];
@@ -66,10 +66,9 @@ export default function Add() {
       const endValue = scheduleList[2];
       await mutateAsync({ weekday: weekValue, start: startValue, end: endValue });
       console.log('mutateAsync아래');
-    });
+    }
     console.log('forEach아래');
-
-    confirm('시간표가 추가되었습니다.');
+    alert('시간표가 추가되었습니다.');
     return goMain();
   };
   return (
