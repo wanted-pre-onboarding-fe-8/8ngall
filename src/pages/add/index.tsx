@@ -34,6 +34,13 @@ export default function Add() {
     setSelectedWeekDays(test);
   }, []);
 
+  const handleTimeChange = (startTimeString12: string, endTimeString12: string) => {
+    const startDate = string12ToObject(startTimeString12);
+    const endDate = string12ToObject(endTimeString12);
+    setSchedule({ start: startDate, end: endDate });
+    resetRepeatButton();
+  };
+
   const handleRepeatButtonClick: ChangeEventHandler<HTMLInputElement> = (event) => {
     const week = event.target.value.toLowerCase();
     const prevSelectedDays = new Set<string>(selectedWeekDays);
@@ -43,13 +50,6 @@ export default function Add() {
       prevSelectedDays.add(week);
     }
     setSelectedWeekDays(prevSelectedDays);
-  };
-
-  const handleTimeChange = (startTimeString12: string, endTimeString12: string) => {
-    const startDate = string12ToObject(startTimeString12);
-    const endDate = string12ToObject(endTimeString12);
-    setSchedule({ start: startDate, end: endDate });
-    resetRepeatButton();
   };
 
   const handleSaveSchedules = (time: scheduleTime, weekdays: Set<string>) => {
