@@ -19,7 +19,7 @@ export interface ISchedule {
 export type ISchedules = ISchedule[];
 
 export interface ServerSideSchedule {
-  id: number;
+  id?: number;
   weekday: Weekdays;
   start: string;
   end: string;
