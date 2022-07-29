@@ -30,16 +30,15 @@ export default function Add() {
   const handleSaveSchedules = (time: scheduleTime, weekdays: string[]) => {
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
-    const seconds = ':00';
     weekdays.forEach((weekday) => {
       const scheduleList: string[] = [];
-      scheduleList.push(weekday, startTime + seconds, endTime + seconds);
+      scheduleList.push(weekday, startTime, endTime);
       const weekValue = scheduleList[0];
       const startValue = scheduleList[1];
       const endValue = scheduleList[2];
       // patchSchedules({ weekday: weekValue, start: startValue, end: endValue });
     });
-    alert('시간표가 추가되었습니다.');
+    confirm('시간표가 추가되었습니다.');
     return goMain();
   };
   return (
