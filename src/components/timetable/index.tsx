@@ -3,6 +3,7 @@ import CCard from '../cCard';
 import styled from 'styled-components';
 import { ServerSideScheduleWrapper, ServerSideSchedule } from '../../types';
 import DeleteDialog from './DeleteDialog';
+import { useDeleteScheduleById } from '../../queries/schedule';
 
 interface TimetableProps {
   schedules: ServerSideScheduleWrapper | [];
@@ -11,23 +12,20 @@ interface TimetableProps {
 function Timetable({ schedules }: TimetableProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [selectedLectureId, setSelectedLectureId] = React.useState(-1);
+  const { mutateAsync, isLoading } = useDeleteScheduleById();
 
   const handleDeleteClick = (id: number) => {
     setSelectedLectureId(id);
     setOpenDialog(true);
   };
 
-  const handleDeleteTime = () => {
-    deleteTime(selectedLectureId);
+  const handleDeleteTime = async () => {
+    await mutateAsync(selectedLectureId);
   };
 
-  const deleteTime = (id: number) => {
-    fetch(`http://localhost:8000/schedules/${id}`, { method: 'DELETE' }).catch((error) => {
-      console.error(error);
-    });
-  };
-
-  return (
+  return isLoading ? (
+    <div>Loading...</div>
+  ) : (
     <Container>
       {Object.entries(schedules).map(([day, lectures]) => (
         <Day key={day}>
