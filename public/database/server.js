@@ -26,13 +26,9 @@ router.render = (req, res) => {
       },
     );
 
-    res.jsonp({
-      schedules: integratedByWeekday,
-    });
+    res.jsonp(integratedByWeekday);
   } else {
-    res.jsonp({
-      schedules: res.locals.data,
-    });
+    res.jsonp(res.locals.data);
   }
 };
 
