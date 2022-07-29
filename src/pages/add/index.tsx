@@ -6,6 +6,7 @@ import StartTimeSelector from './StartTimeSelector';
 import { objectToString24, string12ToObject } from '../../utils/dateTimeHelper';
 import RepeatButton from './RepeatButton';
 import { getWeekdayItem, setWeekdayItem } from '../../utils/storage';
+import { useAddSchedule } from '../../queries/schedule';
 
 interface scheduleTime {
   start: Date;
@@ -17,6 +18,7 @@ const DEFAULT_TIME: scheduleTime = {
 };
 
 export default function Add() {
+  const { mutateAsync } = useAddSchedule();
   const [schedule, setSchedule] = useState<scheduleTime>(DEFAULT_TIME);
   const [selectedWeekDays, setSelectedWeekDays] = useState<Set<string>>(new Set<string>());
   const navigate = useNavigate();
@@ -53,18 +55,19 @@ export default function Add() {
     setWeekdayItem(prevSelectedDays);
   };
 
-  const handleSaveSchedules = (time: scheduleTime, weekdays: Set<string>) => {
+  const handleSaveSchedules = async (time: scheduleTime, weekdays: Set<string>) => {
     const startTime = objectToString24(time.start);
     const endTime = objectToString24(time.end);
-    weekdays.forEach((weekday) => {
+    weekdays.forEach(async (weekday) => {
       const scheduleList: string[] = [];
       scheduleList.push(weekday, startTime, endTime);
       const weekValue = scheduleList[0];
       const startValue = scheduleList[1];
       const endValue = scheduleList[2];
-      console.log(scheduleList);
-      // patchSchedules({ weekday: weekValue, start: startValue, end: endValue });
+      await mutateAsync({ weekday: weekValue, start: startValue, end: endValue });
+      console.log('mutateAsync아래');
     });
+    console.log('forEach아래');
 
     confirm('시간표가 추가되었습니다.');
     return goMain();
