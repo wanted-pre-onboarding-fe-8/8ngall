@@ -3,7 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { ISchedule, ServerSideScheduleWrapper } from '../types';
 
 export function useGetSchedules() {
-  const query = '';
+  const query = '?_sort=start&_order=asc';
   return useQuery(['schedules'], () =>
     httpClient.get<ServerSideScheduleWrapper>(`schedules${query}`),
   );
