@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import DeleteDialog from './DeleteDialog';
 import { ServerSideScheduleWrapper, ServerSideSchedule } from '../../types';
 import { useDeleteScheduleById } from '../../queries/schedule';
-import CircularProgress from '@mui/material/CircularProgress';
 
 interface TimetableProps {
   schedules: ServerSideScheduleWrapper | [];
@@ -13,7 +12,7 @@ interface TimetableProps {
 function Timetable({ schedules }: TimetableProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [selectedLectureId, setSelectedLectureId] = React.useState(-1);
-  const { mutateAsync, isLoading } = useDeleteScheduleById();
+  const { mutateAsync } = useDeleteScheduleById();
 
   const handleDeleteClick = (id: number) => {
     setSelectedLectureId(id);
@@ -25,9 +24,7 @@ function Timetable({ schedules }: TimetableProps) {
     setOpenDialog(false);
   };
 
-  return isLoading ? (
-    <CircularProgress />
-  ) : (
+  return (
     <Container>
       {Object.entries(schedules).map(([day, lectures]) => (
         <Day key={day}>
