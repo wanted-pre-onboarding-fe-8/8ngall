@@ -8,7 +8,7 @@ import { CircularProgress } from '@mui/material';
 
 export default function Main() {
   const navigate = useNavigate();
-  const { data: schedules, isLoading } = useGetSchedules();
+  const { data: schedules, isLoading, refetch } = useGetSchedules();
 
   const goAddClass = () => {
     navigate('/add');
@@ -24,7 +24,7 @@ export default function Main() {
         <Title>Class schedule</Title>
         <CButton name={'Add Class schedule'} onClick={goAddClass} />
       </Header>
-      {isLoading ? <CircularProgress /> : <Timetable schedules={schedules} />}
+      {isLoading ? <CircularProgress /> : <Timetable schedules={schedules} refetch={refetch} />}
     </Wrapper>
   );
 }
