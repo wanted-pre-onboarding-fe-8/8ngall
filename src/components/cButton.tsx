@@ -16,7 +16,8 @@ const Button = styled.button`
   outline: 0;
   border: 0;
   border-radius: 5px;
-  width: 160px;
+  width: fit-content;
+  padding: 0 20px;
   height: 35px;
   &:hover {
     cursor: pointer;
