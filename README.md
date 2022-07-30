@@ -297,13 +297,22 @@
 
 ## 9. 프로젝트 설치 및 실행
 
-### 9.1. Git Clone
-
-```shell
-$ git clone
+### 9.1 서버 Clone 및 실행
+서버가 분리되어 있어 먼저 클론 후 실행시켜주어야 합니다.
+```
+git clone https://github.com/wanted-pre-onboarding-fe-8/8ngall-server.git
+cd 8ngall-server
+npm i 
+npm start 
 ```
 
-### 9.2. 프로젝트 실행
+### 9.2. Git Clone
+
+```shell
+$ git clone https://github.com/wanted-pre-onboarding-fe-8/8ngall.git
+```
+
+### 9.3. 프로젝트 실행
 
 ```shell
 $ npm install
