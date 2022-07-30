@@ -101,8 +101,10 @@ export function checkSchedules(
         }
       }
       if (start.getHours() === dayStartObj.getHours()) {
-        unavailableDays.push(day);
-        break;
+        if (start.getMinutes() === dayStartObj.getMinutes()) {
+          unavailableDays.push(day);
+          break;
+        }
       }
     }
   }
