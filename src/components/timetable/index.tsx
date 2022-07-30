@@ -4,12 +4,16 @@ import styled from 'styled-components';
 import DeleteDialog from './DeleteDialog';
 import { ServerSideScheduleWrapper, ServerSideSchedule } from '../../types';
 import { useDeleteScheduleById } from '../../queries/schedule';
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
 
 interface TimetableProps {
   schedules: ServerSideScheduleWrapper | [];
+  refetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined,
+  ) => Promise<QueryObserverResult<ServerSideScheduleWrapper, unknown>>;
 }
 
-function Timetable({ schedules }: TimetableProps) {
+function Timetable({ schedules, refetch }: TimetableProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [selectedLectureId, setSelectedLectureId] = React.useState(-1);
   const { mutateAsync } = useDeleteScheduleById();
@@ -21,6 +25,7 @@ function Timetable({ schedules }: TimetableProps) {
 
   const handleDeleteTime = async () => {
     await mutateAsync(selectedLectureId);
+    refetch();
     setOpenDialog(false);
   };
 
